@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Alert } from 'react-bootstrap';
+import { Row, Col, Alert, Form } from 'react-bootstrap';
 import LoadingIndicator from '../common/LoadingIndicator';
 import IMovie from '../../models/IMovie';
 import { LoadingStatus } from '../../models/types';
@@ -13,55 +13,71 @@ type Props = {
 type State = {
     status: LoadingStatus,
     movies?: IMovie[],
-    error?: Error
+    error?: Error,
+    searchQuery: string;
 };
 
 class Favourites extends Component<Props, State> {
     state : State = {
-        status: 'LOADING'
+        status: 'LOADING',
+        searchQuery: ''
     };
 
-    render() {
+    handleSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ searchQuery: event.target.value });
+      };
+    
+      render() {
         let el;
-        const { status, movies, error } = this.state;
-
-        switch( status ) {
+        const { status, movies, error, searchQuery } = this.state;
+    
+         let filteredMovies = movies;
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          filteredMovies = movies?.filter((movie) =>
+            movie.title.toLowerCase().includes(query)
+          );
+        }
+    
+        switch (status) {
             case 'LOADING':
-                el = (
-                    <LoadingIndicator
-                        size="large"
-                        message="We are fetching the list of movies. Please wait..."
-                    />
-                );
-                break;
+              el = (
+                <LoadingIndicator
+                  size="large"
+                  message="We are fetching the list of movies. Please wait..."
+                />
+              );
+              break;
             case 'LOADED':
-                el = (
-                    <Row xs={1} md={2} lg={3}>
-                        {
-                            movies?.map(
-                                movies => (
-                                    <Col key={movies.id} className="d-flex align-items-stretch my-3">
-                                        <MovieListItemFav
-                                            movie={movies}
-                                        />
-                                    </Col>
-                                )
-                            )
-                        }
-                    </Row>
-                );
-                break;
-            case 'ERROR_LOADING':
-                el = (
-                    <Alert variant="danger my-3">
-                        {error?.message}
-                    </Alert>
-                );
-                break;
+              el = (
+                <>
+                  <Form className="my-3">
+                    <Form.Control
+                      type="text"
+                      placeholder="Search for a movie by name..."
+                      value={searchQuery}
+                      onChange={this.handleSearchQueryChange}
+                    />
+                  </Form>
+                  <Row xs={1} md={2} lg={3}>
+                    {filteredMovies?.map((movie) => (
+                      <Col key={movie.id} className="d-flex align-items-stretch my-3">
+                        <MovieListItemFav movie={movie} />
+                      </Col>
+                    ))}
+                  </Row>
+                </>
+              );
+              break;
+          case 'ERROR_LOADING':
+            el = (
+              <Alert variant="danger my-3">{error?.message}</Alert>
+            );
+            break;
         }
     
         return el;
-    }
+      }
 
     async componentDidMount() {
         this.setState({
