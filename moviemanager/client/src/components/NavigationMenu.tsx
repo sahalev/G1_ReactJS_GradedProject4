@@ -45,7 +45,7 @@ const NavigationMenu = () => {
                         rotation={270}
                         className="me-2"
                     />
-                    Platter
+                    Movies on the Tip 
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">

@@ -51,7 +51,10 @@ const MovieDetails = ( { match } : RouteComponentProps<{ id: string }> ) => {
                 title,
                 storyline,
                 genres,
-                posterurl
+                posterurl,
+                contentRating,
+                duration,
+                releaseDate
             } = movie as IMovie;
 
             el = (
@@ -84,6 +87,9 @@ const MovieDetails = ( { match } : RouteComponentProps<{ id: string }> ) => {
                                 }
                             </div>
                             <div className="fs-5 my-2">{storyline}</div>
+                            <div className="fs-5 my-2 text-sm">Content Rating :{contentRating}</div>
+                            <div className="fs-5 my-2 text-sm">Duration : {duration}</div>
+                            <div className="fs-5 my-2 text-sm">Release Date : {releaseDate}</div>
                            {/* <Row xs={3} className="text-sm">
                                 <Col>
                                     <FontAwesomeIcon icon={faClock} />
